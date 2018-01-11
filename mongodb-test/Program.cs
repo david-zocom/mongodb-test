@@ -54,7 +54,13 @@ namespace mongodb_test
 			var many = Enumerable.Range(1, 100).Select(i => new BsonDocument("counter", i));
 			collection.InsertMany(many);
 			*/
-
+			
+			// will be deleted later
+			collection.InsertOne(new BsonDocument
+			{
+				{"name", "trash" }
+			});
+			
 			var count = collection.Count(new BsonDocument());
 			Console.WriteLine($"Db has {count} documents.");
 
@@ -63,6 +69,14 @@ namespace mongodb_test
 
 			var all = collection.Find(new BsonDocument()).ToEnumerable();
 			foreach(var x in all)
+				Console.WriteLine("-> " + x.ToString());
+
+			var removefilter = Builders<BsonDocument>.Filter.Eq("name", "trash");
+			collection.DeleteOne(removefilter);
+			Console.WriteLine("\nTrash deleted.\n");
+
+			var all2 = collection.Find(new BsonDocument()).ToEnumerable();
+			foreach (var x in all2)
 				Console.WriteLine("-> " + x.ToString());
 
 			Console.WriteLine("press any key to exit");
