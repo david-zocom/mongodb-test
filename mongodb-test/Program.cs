@@ -15,19 +15,20 @@ namespace mongodb_test
 			var db = client.GetDatabase("animaldb");
 			var collection = db.GetCollection<BsonDocument>("animaldb");
 
-			/* Add one document
+			// Add one document (sql insert)
 			var one = new BsonDocument
 			{
-				{"name", "MongoDB" },
-				{"type", "Database" },
-				{"count",1 },
-				{"info", new BsonDocument
+				{"name", "demo insert" },
+				{"count", 1 },
+				{"nested", new BsonDocument
 					{
 						{"x",203 },
 						{"y",102 }
 					}}
 			};
-			collection.InsertOne(one);*/
+			collection.InsertOne(one);
+
+			// Find (sql select, where)
 			Console.WriteLine("Looking for Mongoose...\n");
 			const string mongoose = "Mongoose";
 			var another = new BsonDocument
@@ -44,6 +45,7 @@ namespace mongodb_test
 			}
 			else
 			{
+				// Update
 				Console.WriteLine("Found " + found.Count() + ": " + found.First().ToString());
 				int value = found.First()["value"].AsInt32;
 				var update = Builders<BsonDocument>.Update.Set("value", value + 1);
@@ -55,7 +57,7 @@ namespace mongodb_test
 			collection.InsertMany(many);
 			*/
 			
-			// will be deleted later
+			// Will be deleted later
 			collection.InsertOne(new BsonDocument
 			{
 				{"name", "trash" }
@@ -71,6 +73,7 @@ namespace mongodb_test
 			foreach(var x in all)
 				Console.WriteLine("-> " + x.ToString());
 
+			// Delete
 			var removefilter = Builders<BsonDocument>.Filter.Eq("name", "trash");
 			collection.DeleteOne(removefilter);
 			Console.WriteLine("\nTrash deleted.\n");
